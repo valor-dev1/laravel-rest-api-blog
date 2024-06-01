@@ -28,6 +28,7 @@ cp .env.example .env // Update  database credentials
 php artisan migrate
 ```
 
+All done
 
 ## Laravel Sponsors
 
