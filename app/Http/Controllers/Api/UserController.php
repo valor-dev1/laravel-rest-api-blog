@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
@@ -58,8 +59,8 @@ class UserController extends Controller
         //
     }
 
-    public function profile()
+    public function profile(Request $request)
     {
-
+        return $request->user();
     }
 }
