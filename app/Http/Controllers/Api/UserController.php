@@ -80,4 +80,11 @@ class UserController extends Controller
     {
         return $request->user();
     }
+
+    public function posts(User $user)
+    {
+        Gate::authorize('posts', $user); // Authorize the current user
+
+        return $user->posts;
+    }
 }
