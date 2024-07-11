@@ -12,6 +12,12 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
 
+    const ADMIN = 'admin';
+
+    const EDITOR = 'editor';
+
+
+    CONST SUBSCRIBER = 'subscriber';
     /**
      * The attributes that are mass assignable.
      *
@@ -48,6 +54,11 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return $this->id === 1;
+        return $this->role === static::ADMIN;
+    }
+
+    public function isEditor()
+    {
+        return $this->role === static::EDITOR;
     }
 }

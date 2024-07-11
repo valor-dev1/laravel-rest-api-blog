@@ -16,6 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAny', [User::class]); // Authorize the current user
         return User::paginate();
     }
 
@@ -40,7 +41,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        Gate::authorize('view', $user); // Authorize the current user
+
+        return $user;
     }
 
     /**
@@ -48,7 +51,15 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        Gate::authorize('update', $user); // Authorize the current user
+
+        $user->update($request->only(['name', 'email', 'password']));
+
+        return response()->json([
+            'success'   => true,
+            'message'   => __('messages.users.updated_successfully'),
+            'user'      => $user,
+        ]);
     }
 
     /**
@@ -56,7 +67,13 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        Gate::authorize('delete', $user); // Authorize the current user
+
+        $user->delete();
+        return response()->json([
+            'success'   => true,
+            'message'   => __('messages.users.deleted_successfully'),
+        ]);
     }
 
     public function profile(Request $request)

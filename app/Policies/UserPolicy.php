@@ -25,7 +25,9 @@ class UserPolicy
      */
     public function viewAny(User $user): Response
     {
-        return Response::deny(__('messages.users.not_allowed', ['action' => 'view']));
+        return $user->isAdmin() || $user->isEditor()
+                ? Response::allow()
+                : Response::deny(__('messages.users.not_allowed', ['action' => 'view']));
     }
 
     /**
@@ -33,7 +35,9 @@ class UserPolicy
      */
     public function view(User $user, User $model): Response
     {
-        return Response::deny(__('messages.users.not_allowed', ['action' => 'view']));
+        return $user->isAdmin() || $user->isEditor() || $user->id === $model->id
+                ? Response::allow()
+                : Response::deny(__('messages.users.not_allowed', ['action' => 'update']));
     }
 
     /**
@@ -51,7 +55,9 @@ class UserPolicy
      */
     public function update(User $user, User $model): Response
     {
-        return Response::deny(__('messages.users.not_allowed', ['action' => 'update']));
+        return $user->isAdmin() || $user->id === $model->id
+                ? Response::allow()
+                : Response::deny(__('messages.users.not_allowed', ['action' => 'update']));
     }
 
     /**
@@ -59,7 +65,9 @@ class UserPolicy
      */
     public function delete(User $user, User $model): Response
     {
-        return Response::deny(__('messages.users.not_allowed', ['action' => 'delete']));
+        return $user->isAdmin()
+                ? Response::allow()
+                : Response::deny(__('messages.users.not_allowed', ['action' => 'delete']));
     }
 
     /**
@@ -67,7 +75,9 @@ class UserPolicy
      */
     public function restore(User $user, User $model): Response
     {
-        return Response::deny(__('messages.users.not_allowed', ['action' => 'restore']));
+        return $user->isAdmin()
+                ? Response::allow()
+                : Response::deny(__('messages.users.not_allowed', ['action' => 'restore']));
     }
 
     /**
@@ -75,6 +85,8 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model): Response
     {
-        return Response::deny(__('messages.users.not_allowed', ['action' => 'forcefully delete']));
+        return $user->isAdmin()
+                ? Response::allow()
+                : Response::deny(__('messages.users.not_allowed', ['action' => 'forcefully delete']));
     }
 }
