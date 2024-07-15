@@ -16,5 +16,7 @@ return [
         'not_allowed_restore'    => 'You are not allowed restore a post',
         'created_successfully'  => 'Post ":title" is created successfully',
         'updated_successfully'  => 'Post ":title" is updated successfully',
-    ]
+        'deleted_successfully'  => 'Post ":title" is deleted successfully',
+    ],
+    'not_found' => 'The requested resourced not found'
 ];

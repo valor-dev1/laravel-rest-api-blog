@@ -76,6 +76,13 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        Gate::authorize('delete', $post); // Authorize the current user
+
+        $post->delete();
+
+        return response()->json([
+            'success'   => true,
+            'message'   => __('messages.posts.deleted_successfully', ['title' => $post->title]),
+        ]);
     }
 }
