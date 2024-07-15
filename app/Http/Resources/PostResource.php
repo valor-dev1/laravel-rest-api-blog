@@ -7,6 +7,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends JsonResource
 {
+
+    protected $withoutComments;
+    protected $withoutAuthor;
     /**
      * Transform the resource into an array.
      *
@@ -23,8 +26,22 @@ class PostResource extends JsonResource
             'allow_comments' => $this->allow_comments,
             'creation_date' => $this->created_at,
             'modified_on'   => $this->updated_at,
-            'comments'  => $this->comment,
-            'author'    => $this->when(optional($request->user())->isAdmin(), UserResource::make($this->user), []),
+            'comments'  => $this->when(!$this->withoutComments, $this->comment),
+            'author'    => $this->when(optional($request->user())->isAdmin() && !$this->withoutAuthor, UserResource::make($this->user)),
         ];
+    }
+
+    // Method to exclude comments
+    public function withoutComments()
+    {
+        $this->withoutComments = true;
+        return $this;
+    }
+
+    // Method to exclude comments
+    public function withoutAuthor()
+    {
+        $this->withoutAuthor = true;
+        return $this;
     }
 }

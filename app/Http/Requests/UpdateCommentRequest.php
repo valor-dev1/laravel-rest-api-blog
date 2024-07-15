@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Comment;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCommentRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class UpdateCommentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,9 @@ class UpdateCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'comment'   => ['required'],
+            'ip_address' => ['ip'],
+            'status'    => Rule::in([Comment::PENDING, Comment::APPROVE, Comment::SPAM]),
         ];
     }
 }
