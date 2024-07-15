@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Post;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -11,9 +12,15 @@ class StorePostRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
+    public function authorize(): Response
     {
-        return true;
+        if (! $this->user()) {
+            return Response::deny(__('messages.posts.not_allowed_create'));
+        }
+
+        return $this->user()->isAdmin() || $this->user()->isEditor()
+                ? Response::allow()
+                : Response::deny(__('messages.posts.not_allowed_create'));
     }
 
     /**

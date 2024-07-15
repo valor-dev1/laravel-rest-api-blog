@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use LDAP\Result;
 
 class PostPolicy
 {
@@ -25,7 +26,7 @@ class PostPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -33,7 +34,7 @@ class PostPolicy
      */
     public function view(User $user, Post $post): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -49,32 +50,40 @@ class PostPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Post $post): bool
+    public function update(User $user, Post $post): Response
     {
-        return false;
+        return $user->isAdmin() || $user->isEditor() || $post->user_id === $user->id
+                ? Response::allow()
+                : Response::deny(__('messages.posts.not_allowed_update'));
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Post $post): bool
+    public function delete(User $user, Post $post): Response
     {
-        return false;
+        return $user->isAdmin()
+                ? Response::allow()
+                : Response::deny(__('messages.posts.not_allowed_delete'));
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Post $post): bool
+    public function restore(User $user, Post $post): Response
     {
-        return false;
+        return $user->isAdmin()
+                ? Response::allow()
+                : Response::deny(__('messages.posts.not_allowed_restore'));
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Post $post): bool
+    public function forceDelete(User $user, Post $post): Response
     {
-        return false;
+        return $user->isAdmin()
+                ? Response::allow()
+                : Response::deny(__('messages.posts.not_allowed_force_delete'));
     }
 }

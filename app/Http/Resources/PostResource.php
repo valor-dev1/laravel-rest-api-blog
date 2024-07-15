@@ -24,7 +24,7 @@ class PostResource extends JsonResource
             'creation_date' => $this->created_at,
             'modified_on'   => $this->updated_at,
             'comments'  => $this->comment,
-            'author'    => UserResource::make($this->user),
+            'author'    => $this->when(optional($request->user())->isAdmin(), UserResource::make($this->user), []),
         ];
     }
 }

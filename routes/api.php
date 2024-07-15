@@ -10,5 +10,5 @@ require __DIR__.'/auth.php';
 Route::middleware(['auth:sanctum'])->get('/profile', [UserController::class, 'profile']);
 Route::middleware(['auth:sanctum'])->get('/users/{user}/posts', [UserController::class, 'posts']);
 Route::middleware('auth:sanctum')->apiResource('users', UserController::class);
-Route::apiResource('posts', PostController::class)->only(['index']);
-Route::middleware('auth:sanctum')->apiResource('posts', PostController::class)->except(['index']);
+Route::apiResource('posts', PostController::class)->only(['index', 'show']);
+Route::middleware('auth:sanctum')->apiResource('posts', PostController::class)->except(['index', 'show']);

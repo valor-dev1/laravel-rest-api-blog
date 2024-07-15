@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\PostCreated;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Controllers\Controller;
@@ -35,7 +36,9 @@ class PostController extends Controller
     {
         Gate::authorize('create', Post::class); // Authorize the current user
         
-        $post = auth()->user()->posts()->create($request->validated());
+        $post = $request->user()->posts()->create($request->validated());
+
+        event(new PostCreated($post));
 
         return response()->json([
             'success'   => true,
@@ -49,7 +52,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return PostResource::make($post);
+        return new PostResource($post);
     }
 
     /**
@@ -57,7 +60,15 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        //
+        Gate::authorize('update', $post); // Authorize the current user
+
+        $post->update($request->validated());
+
+        return response()->json([
+            'success'   => true,
+            'message'   => __('messages.posts.updated_successfully', ['title' => $post->title]),
+            'post'      => PostResource::make($post)
+        ]);
     }
 
     /**
