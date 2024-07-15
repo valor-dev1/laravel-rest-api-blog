@@ -39,9 +39,11 @@ class PostPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user): Response
     {
-        return false;
+        return $user->isAdmin() || $user->isEditor()
+                ? Response::allow()
+                : Response::deny(__('messages.posts.not_allowed_create'));
     }
 
     /**

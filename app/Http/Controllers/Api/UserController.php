@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\PostResource;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -17,7 +19,7 @@ class UserController extends Controller
     public function index()
     {
         Gate::authorize('viewAny', [User::class]); // Authorize the current user
-        return User::paginate();
+        return UserResource::collection(User::paginate());
     }
 
     /**
@@ -43,7 +45,7 @@ class UserController extends Controller
     {
         Gate::authorize('view', $user); // Authorize the current user
 
-        return $user;
+        return UserResource::make($user);
     }
 
     /**
@@ -58,7 +60,7 @@ class UserController extends Controller
         return response()->json([
             'success'   => true,
             'message'   => __('messages.users.updated_successfully'),
-            'user'      => $user,
+            'user'      => UserResource::make($user),
         ]);
     }
 
@@ -83,8 +85,8 @@ class UserController extends Controller
 
     public function posts(User $user)
     {
-        Gate::authorize('posts', $user); // Authorize the current user
+        Gate::authorize('viewPosts', $user); // Authorize the current user
 
-        return $user->posts;
+        return PostResource::collection($user->posts);
     }
 }

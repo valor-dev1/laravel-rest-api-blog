@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StorePostRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class StorePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,11 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => ['required', 'regex:/^[A-Za-z0-9\s]+$/i'],
+            'slug'  => ['sometimes', 'unique:App\Models\Post,slug'],
+            'content'  => ['required', 'min:10'],
+            'status'    => Rule::in([Post::DRAFT, Post::PENDING, Post::PUBLISH]),
+            'allow_comments'    => ['boolean']
         ];
     }
 }

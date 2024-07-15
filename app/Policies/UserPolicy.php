@@ -89,4 +89,14 @@ class UserPolicy
                 ? Response::allow()
                 : Response::deny(__('messages.users.not_allowed', ['action' => 'forcefully delete']));
     }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function viewPosts(User $user, User $model): Response
+    {
+        return $user->isAdmin() || $user->isEditor()
+                ? Response::allow()
+                : Response::deny(__('messages.users.not_allowed_vieW_posts', ['user' => $model->name]));
+    }
 }
