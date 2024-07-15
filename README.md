@@ -7,14 +7,20 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Install
+## Installation
 
 Clone the repo
 ```
 git clone git@github.com:valor-dev1/laravel-rest-api-blog.git
 ```
 
-Then run the following commands
+If you want to run on docker
+
+```
+docker compose up -d
+```
+
+Then run the following commands (in the container for Docker)
 
 ```
 composer install
